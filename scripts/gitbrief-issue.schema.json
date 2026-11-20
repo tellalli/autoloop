@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "revision", "decision", "duplicate_issue_number", "blocking_questions", "title", "problem_and_desired_outcome", "scope", "acceptance_criteria", "implementation_context", "verification", "open_questions"],
+  "properties": {
+    "request_id": { "type": "string" },
+    "revision": { "type": "integer" },
+    "decision": { "type": "string", "enum": ["ready", "duplicate", "needs_clarification"] },
+    "duplicate_issue_number": { "type": ["integer", "null"] },
+    "blocking_questions": { "type": "array", "items": { "type": "string" } },
+    "title": { "type": "string" },
+    "problem_and_desired_outcome": { "type": "string" },
+    "scope": { "type": "string" },
+    "acceptance_criteria": { "type": "string" },
+    "implementation_context": { "type": "string" },
+    "verification": { "type": "string" },
+    "open_questions": { "type": "string" }
+  }
+}

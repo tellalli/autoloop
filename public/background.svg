@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="-766 0 3502 4102"
+     width="3502" height="4102">
+
+  <title>BeWhere panel background — widened</title>
+  <desc>Artboard extended left and down so the lower-left ring completes. Circle positions unchanged from the original .ai.</desc>
+
+  <!-- Field now spans the widened board. -->
+  <rect x="-766" y="0" width="3502" height="4102" fill="#FFFFFF"/>
+
+  <g fill="none" stroke-linecap="butt">
+
+    <!-- Large grey ring. Still bleeds off the top, as in the original. -->
+    <circle cx="1408.92" cy="356.69" r="1159.48"
+            stroke="#353137" stroke-width="292.507" opacity="0.04"/>
+
+    <!-- Blue ring, centre. Fully contained. -->
+    <circle cx="1633.13" cy="1664.88" r="827.77"
+            stroke="#51709F" stroke-width="398.52" opacity="0.11"/>
+
+    <!-- Thin grey ring, lower left. Now complete: the board reaches
+         x=-766 and y=4102, which clears its -765.11 / 4101.91 extents. -->
+    <circle cx="456.95" cy="2879.85" r="1210.09"
+            stroke="#353137" stroke-width="23.943" opacity="0.11"/>
+
+  </g>
+
+  <!--
+    Original artboard occupied 0,0 to 2736,3312 within this space.
+    New board is 48.6 x 57.0 in at 72pt, vs 37 x 45 in originally.
+  -->
+</svg>

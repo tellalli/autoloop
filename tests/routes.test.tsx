@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppRoutes } from '@/App';
@@ -33,10 +33,41 @@ describe('public and protected routes', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it('redirects unauthenticated main-page visits to login', () => {
-    renderAt('/app');
+  it.each(['/app', '/app/dashboard'])('redirects unauthenticated visits to %s to login', (path) => {
+    renderAt(path);
     expect(screen.getByRole('heading', { name: 'Welcome back.' })).toBeTruthy();
     expect(screen.queryByRole('heading', { name: 'Welcome, Test User.' })).toBeNull();
+  });
+
+  it.each([
+    ['Test User', 'Welcome, Test User.'],
+    [undefined, 'Welcome, user@example.test.'],
+  ])('opens the Dashboard from Requests with login name %s', async (name, greeting) => {
+    const response = { ...authResponse, user: { ...authResponse.user, name } };
+    vi.stubGlobal('fetch', vi.fn()
+      .mockResolvedValueOnce(jsonResponse({ Salt: 'test-salt', Token: 'test-challenge-token' }))
+      .mockResolvedValueOnce(jsonResponse(response)));
+    renderAt('/login');
+    fillLogin();
+    expect(await screen.findByRole('button', { name: 'Looper' })).toBeTruthy();
+    const nav = within(screen.getByRole('navigation', { name: 'Workspace' }));
+    const dashboard = nav.getByRole('link', { name: 'Dashboard' });
+    expect(dashboard.getAttribute('href')).toBe('/app/dashboard');
+    fireEvent.click(dashboard);
+    expect(dashboard.getAttribute('aria-current')).toBe('page');
+    const main = screen.getByRole('main');
+    expect(within(main).getByRole('heading', { level: 1, name: greeting })).toBeTruthy();
+    expect(main.textContent).toBe(greeting);
+    expect(screen.queryByRole('button', { name: 'Looper' })).toBeNull();
+    fireEvent.click(nav.getByRole('link', { name: 'Requests' }));
+    expect(screen.getByRole('button', { name: 'Looper' })).toBeTruthy();
+  });
+
+  it('opens a saved session directly on the Dashboard without loading tickets', () => {
+    saveSession(session);
+    renderAt('/app/dashboard');
+    expect(screen.getByRole('main').textContent).toBe('Welcome, Test User.');
+    expect(fetchTickets).not.toHaveBeenCalled();
   });
 
   it('signs in, saves the session, and opens the blank main page', async () => {
